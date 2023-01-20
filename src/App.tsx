@@ -1,9 +1,12 @@
-import { Component } from 'react';
-import { TasksType } from './@types/TasksType';
-import { TaskType } from './@types/TaskType';
 import Header from './components/Header';
 import Tasks from './components/Tasks';
 import AddTask from './components/AddTask';
+import { Component } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { TasksType } from './@types/TasksType';
+import { TaskType } from './@types/TaskType';
+import About from './components/About';
+import Footer from './components/Footer';
 
 interface AppPropsType { }
 interface AppStateType {
@@ -66,22 +69,37 @@ class App extends Component<AppPropsType, AppStateType> {
 
 	render() {
 		return (
-			<div className='container'>
-				<Header
-					title='CRUD - ReactJS:CC'
-					showForm={() => this.setState({ showAddForm: !this.state.showAddForm })}
-					showAddForm={this.state.showAddForm}
-				/>
-				{this.state.showAddForm && <AddTask onAdd={this.addTask} />}
-				{this.state.tasks.length > 0
-					? <Tasks
-						onDelete={this.deleteTask}
-						tasks={this.state.tasks}
-						onToggle={this.toggleReminder}
+			<BrowserRouter>
+				<div className="container">
+					<Header
+						title='CRUD-TS'
+						showForm={() => this.setState({ showAddForm: !this.state.showAddForm })}
+						showAddForm={this.state.showAddForm}
 					/>
-					: 'No tasks found click "Add" to create a task'
-				}
-			</div>
+					<Routes>
+						<Route path="/" element={
+							<>
+								{this.state.showAddForm && <AddTask onAdd={this.addTask} />}
+								{this.state.tasks.length > 0
+									? <Tasks
+										onDelete={this.deleteTask}
+										tasks={this.state.tasks}
+										onToggle={this.toggleReminder}
+									/>
+									: 'No tasks found click "Add" to create a task'
+								}
+								<Footer goto="about" label="Go to About" />
+							</>
+						} />
+						<Route path="about" element={<About />} />
+						<Route path="*" element={
+							<>
+								<h4>Page not found</h4>
+							</>
+						} />
+					</Routes>
+				</div>
+			</BrowserRouter>
 		)
 	}
 }
